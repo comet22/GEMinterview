@@ -1,12 +1,7 @@
-var questions = ["Which type is weak to fire?", "Which of these is NOT a Pokemon?"];
-var answers = [
-    ["fire", "water", "steel", "fairy"],
-    ["Mawile", "Draconaught", "Decidueye", "Froakie"]
-];
-var correctAnswers = [
-    [false, false, true, false],
-    [false, true, false, false]
-];
+var response = "";
+var questions = [];
+var answers = [];
+var correctAnswers = [];
 var correct = 0;
 
 function handleClick(chosenAnswer) {
@@ -24,7 +19,7 @@ function handleClick(chosenAnswer) {
                     document.getElementById(j).innerHTML = answers[i+1][j];
                 }
             } else {
-                document.getElementById('q').innerHTML = "Congrats, you got " + correct + " questions correct!"
+                document.getElementById('q').innerHTML = "You got " + correct + " questions correct, congrats!"
                 document.getElementById('answers').style.display = "none";
             }
             break;
@@ -33,6 +28,45 @@ function handleClick(chosenAnswer) {
 }
 
 function handleLoad() {
+    var xhttp;
+    xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            response = this.responseText;
+        }
+    };
+    xhttp.open("GET", "getquestions.php?q=", true);
+    xhttp.send();   
+}
+
+function startquiz() {
+    var data = String(response).split(' ');
+    for(var i = 0; i < data.length-1; i+=6) {
+        questions.push(data[i].replaceAll('_',' '));
+        
+        var correct = data[i + 5];
+        var correctRow = [];
+        for(var j = 0; j < 4; j++) {
+            if(correct == j) {
+                correctRow.push(true);
+            } else {
+                correctRow.push(false);
+            }
+        }
+        correctAnswers.push(correctRow);
+        
+        var responseAnswers = [];
+        for(var j = 1; j < 5; j++) {
+            responseAnswers.push(data[i+j]);
+        }
+        answers.push(responseAnswers);
+    }
+
+    document.getElementById('description').style.display = "none";
+    document.getElementById('start').style.display = "none";
+
+    document.getElementById('answers').style.display = "block";
+
     document.getElementById('q').innerHTML = questions[0];
     for(var i = 0; i < answers[0].length; i++) {
         document.getElementById(i).innerHTML = answers[0][i];
