@@ -1,11 +1,11 @@
 <?php
-$mysqli = new mysqli("localhost", "22ruiz", "", "22ruiz");
-if($mysqli->connect_error) {
+$conn = new mysqli("localhost", "22ruiz", "testinG123!", "22ruiz");
+if($conn->connect_error) {
   exit('Could not connect');
 }
 
 $sql = "SELECT question, answer0, answer1, answer2, answer3, correct FROM questions";
-$result = mysqli_query($mysqli, $sql);
+$result = mysqli_query($conn, $sql);
 
 $questions = array();
 
